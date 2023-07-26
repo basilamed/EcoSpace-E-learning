@@ -5,7 +5,7 @@
         </h2>
 
         <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
-            {{ __("Update your account's profile information and email address.") }}
+            {{ __("Update your account's profile information.") }}
         </p>
     </header>
 
@@ -16,12 +16,53 @@
     <form method="post" action="{{ route('profile.update') }}" class="mt-6 space-y-6">
         @csrf
         @method('patch')
-
+        <!-- Name -->
         <div>
             <x-input-label for="name" :value="__('Name')" />
             <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
         </div>
+        <!-- Surname -->
+        <div>
+            <x-input-label for="surname" :value="__('Surname')" />
+            <x-text-input id="surname" name="surname" type="text" class="mt-1 block w-full" :value="old('surname', $user->surname)" required autocomplete="surname" />
+            <x-input-error class="mt-2" :messages="$errors->get('surname')" />
+        </div>
+
+        <!-- JMBG -->
+        <div>
+            <x-input-label for="jmbg" :value="__('JMBG')" />
+            <x-text-input id="jmbg" name="jmbg" type="text" class="mt-1 block w-full" :value="old('jmbg', $user->jmbg)" required autocomplete="jmbg" />
+            <x-input-error class="mt-2" :messages="$errors->get('jmbg')" />
+        </div>
+
+        <!-- Birth Place -->
+        <div>
+            <x-input-label for="birthPlace" :value="__('Birth Place')" />
+            <x-text-input id="birthPlace" name="birthPlace" type="text" class="mt-1 block w-full" :value="old('birthPlace', $user->birthPlace)" required autocomplete="birthPlace" />
+            <x-input-error class="mt-2" :messages="$errors->get('birthPlace')" />
+        </div>
+
+        <!-- Birth Country -->
+        <div>
+            <x-input-label for="birthCountry" :value="__('Birth Country')" />
+            <x-text-input id="birthCountry" name="birthCountry" type="text" class="mt-1 block w-full" :value="old('birthCountry', $user->birthCountry)" required autocomplete="birthCountry" />
+            <x-input-error class="mt-2" :messages="$errors->get('birthCountry')" />
+        </div>
+
+        <!-- Contact -->
+        <div>
+            <x-input-label for="contact" :value="__('Contact')" />
+            <x-text-input id="contact" name="contact" type="text" class="mt-1 block w-full" :value="old('contact', $user->contact)" required autocomplete="contact" />
+            <x-input-error class="mt-2" :messages="$errors->get('contact')" />
+        </div>
+
+        <!-- Picture -->
+        <!-- <div>
+            <x-input-label for="picture" :value="__('Picture')" />
+            <x-text-input id="picture" name="picture" type="file" class="mt-1 block w-full" :value="old('picture', $user->picture)" required autocomplete="picture" />
+            <x-input-error class="mt-2" :messages="$errors->get('picture')" />
+        </div> -->
 
         <div>
             <x-input-label for="email" :value="__('Email')" />
