@@ -48,6 +48,15 @@
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
                         </form>
+
+                        @if (Auth::user()->role == "teacher" )
+                            <x-dropdown-link class="dropdown-item" href="/course/create">
+                                {{ __('Add course') }}
+                            </x-dropdown-link>
+                            <x-dropdown-link class="dropdown-item" href="/all-courses">
+                                {{ __('Posted courses') }}
+                            </x-dropdown-link>
+                        @endif
                     </x-slot>
                 </x-dropdown>
             </div>

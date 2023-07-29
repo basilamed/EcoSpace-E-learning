@@ -19,13 +19,13 @@
         <!-- Navigation Bar -->
         <div class="bg-white dark:bg-gray-800 shadow">
             @if (Route::has('login'))
-            <header class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-between" style="border: 2px solid black; padding: 20px;">
-                <div class="flex items-center"> <!-- Flex container for the logo and text -->
-                    <x-application-logo class="block h-10 w-auto mr-4" />
+            <header class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 flex items-center justify-between" style="padding: 20px;">
+                <div class="flex items-center" style=" padding: 0 25px;"> <!-- Flex container for the logo and text -->
+                    <x-application-logo/>
                 </div>
                 
                 @auth
-                    <a href="{{ url('/dashboard') }}" class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Home</a>
+                    <a href="{{ url('/dashboard') }}" class=" ml-4 font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Home</a>
                 @else
                     <a href="{{ route('login') }}" class="font-semibold text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white focus:outline focus:outline-2 focus:rounded-sm focus:outline-red-500">Log in</a>
 
@@ -37,39 +37,53 @@
             @endif
         </div>
         <!-- Content Section -->
-        <div class="py-12">
+        <div class="py-12" style=" width:85%; margin: auto; padding-bottom: 25px;">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 mt-6">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg" style="width:95%; margin: auto; border-radius: 10px;">
                     <div>
-                        <img src="/images/saksijeT.jpg" alt="dijete i cvijet"/>
+                        <img src="/images/saksijeT.jpg" alt="dijete i cvijet" style="border-radius: 10px 10px 0 0 ;"/>
                     </div>
 
                     <div class="p-6 text-gray-900 dark:text-gray-100 flex flex-col items-center" style="width:90%; margin:auto;">
-                        <h1 class="text-lg font-semibold mb-4">Welcome to our E-Learning App!</h1>
                         <div class="text-center">
+                        <div class="mb-6">
+                            <h2 class="text-base font-semibold">Welcome to our E-Learning App!</h2>
+                        </div>
+                        <div class="mb-4"> 
                             <p class="text-base">
                                 Are you passionate about gardening and ecology? You're in the right place!
                                 Our E-Learning platform offers a wide range of courses that will help you
                                 explore the fascinating world of gardening, environmental conservation, and sustainable practices.
                             </p>
-                            <p class="text-base mt-2">
-                            Whether you are a beginner looking to start your gardening journey or an experienced gardener
-                            seeking to deepen your knowledge, we have courses suitable for everyone.
+                        </div>
+                        <div class="mb-4">
+                            <p class="text-base">
+                                Whether you are a beginner looking to start your gardening journey or an experienced gardener
+                                seeking to deepen your knowledge, we have courses suitable for everyone.
                             </p>
-                            <p class="text-base mt-2">
+                        </div>
+                        <div class="mb-4">
+                            <p class="text-base">
                                 Our expert instructors will guide you through the different aspects of gardening, including plant care,
                                 landscaping, organic gardening, permaculture, and much more.
                             </p>
-                            <p class="text-base mt-2">
+                        </div>
+                        <div class="mb-4">
+                            <p class="text-base">
                                 Join our community of like-minded individuals and embark on an educational adventure in gardening
                                 and ecology. Start your learning journey today!
                             </p>
+                        </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
+    </div>
+    <div class="footer dark:bg-gray-800 " style="background-color: #f0f0f0; padding: 20px; text-align: center; padding-top:20px;">
+        <h4 style="font-size: 1.2rem; margin-bottom: 10px;">EcoSpace</h4>
+        <a style="color: #888;">&copy;CopyRight BM 2023</a>
     </div>
 </body>
 </html>
