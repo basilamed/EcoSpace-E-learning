@@ -66,6 +66,7 @@ class User extends Authenticatable
         $attend = $this->attends->where('course_id', $course->id)->first();
         return $attend ? true : false;
     }
+    
     public function answers()
     {
         return $this->hasMany(AnswerUser::class);

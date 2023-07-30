@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Home') }}
+            {{ __('Course details') }}
         </h2>
     </x-slot>
 
@@ -153,6 +153,10 @@
             width: 60%;
 
         }
+        #enrolled{
+            margin: 20px auto;
+            color: #1dc41d;
+            font-weight: bold;}
         
     </style>
 
@@ -180,11 +184,10 @@
         @endif
     </div>
 
-     <!-- Users that enrolled -->
-     <div class="content">
-        
+     
         <!-- Profile actions for course owner -->
         @if (Auth::user()->ownsCourse($course))
+        <div class="content">
             <div class="users">
                 <div class="container-fluid px-4">
                 <div class="card mt-4">
@@ -197,7 +200,8 @@
                                     <div class="alert">
                                         {{ Session::get('message') }}
                                     </div>
-                    @endif           
+                    @endif  
+                    @if (count($attendants) > 0)       
                     <thead>
                         <tr>
                             <th>Name:</th>
@@ -215,6 +219,7 @@
                         </tr>
                     @endforeach
                     </tbody>
+                    @endif
                 </table>
                 </div>
                 <!-- Course participants button -->
@@ -224,33 +229,31 @@
                 </a>
                 </div>
               </div>  
-            
+              </div>
         @endif
-    </div>
-    <!-- Content section -->
-    <div class="content">
-        
+
         <!-- Profile actions for course owner -->
+        <div class="content">
         @if (Auth::user()->ownsCourse($course))
             <div class="profileActions">
-                
                 <!-- Create test button -->
                 <a href='/course/{{$course->id}}/create-test' class="btn btn-primary customBtn" style="margin-top: 10px;">
                     Create Test
                 </a>
             </div>
+            </div>
         @endif
-    </div>
+   
 
     <!-- Enroll button -->
     <div class="finish-dugme">
         @if(Auth::user()->attendsCourse($course))
-            <p>You are enrolled in this course</p>
+            <p id='enrolled'>You have enrolled in this course</p>
         @else
             @if(Auth::user()->role == "student")
                 <form action="{{ route('course.enroll', $course->id) }}" method="POST">
                     @csrf
-                    <button type="submit" class="btn btn-primary">Start this course</button>
+                    <button type="submit" class='dugme'>Enroll in this course</button>
                 </form>
             @endif
         @endif
@@ -283,7 +286,7 @@
         <hr style="margin-left: 242px; margin-right: 216px;">
         <div class="content-div2">
             <div class="naslov">
-                <h2>Test you knowlege</h2>
+                <h2><b>Test you knowlege</b></h2>
             </div>
             <div style="margin: 20px">
                 <a href="/course/{{$course->id}}/level" class="btn btn-primary">

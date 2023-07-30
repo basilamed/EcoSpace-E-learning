@@ -26,6 +26,17 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
+//admin
+Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index'])->name('admin');
+Route::delete('/users/{id}', [App\Http\Controllers\AdminController::class, 'deleteUser'])->name('users.destroy');
+Route::patch('/admin/{user}', [App\Http\Controllers\AdminController::class, 'approve'])->name('users.approve');
+Route::post('/admin/{user}', [App\Http\Controllers\AdminController::class, 'reject'])->name('users.reject');
+Route::post('/admin-notification', [App\Http\Controllers\AdminController::class, 'addNotification']);
+Route::get('/admin-notification/{id}', [App\Http\Controllers\AdminController::class, 'showNotification'])->name('notification.edit');
+Route::put('/admin-notification/{id}/update', [App\Http\Controllers\AdminController::class, 'updateNotification']);
+Route::delete('/admin-notification/{id}/delete', [App\Http\Controllers\AdminController::class, 'deleteNotification']);
+
+//courses
 Route::get('/course/create', [App\Http\Controllers\CourseController::class, 'create']);
 Route::post('/course', [App\Http\Controllers\CourseController::class, 'store']);
 Route::get('/course/edit/{id}', [App\Http\Controllers\CourseController::class, 'edit']);

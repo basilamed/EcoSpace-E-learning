@@ -60,6 +60,23 @@
         .justify-content-center {
             text-align: center;
         }
+        .notification-container {
+        margin: 20px auto;
+        width: 80%;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 20px;
+        background-color: #f8f8f8;
+        }
+        .obavestenje {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px;
+            width: 100%;
+            margin: 5px auto;
+            background-color: #e5fbe5;
+        }
     </style>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -91,7 +108,7 @@
                     </div>
                 </div>
                 <hr style="margin: 1rem 130px;">
-                <h1 class="row justify-content-center">The courses we offer</h1>
+                <h1 class="row justify-content-center"><b>The courses we offer</b></h1>
                 <div class="wrapper">
                     
                     <div class="grid">
@@ -116,6 +133,16 @@
                         </div>
                         @endforeach
                             
+                </div>
+                <h1 class="row justify-content-center">Notifications</h1>
+                <div class="wrapper">
+                    <div class="notification-container">
+                    @foreach($notifications as $notification)
+                        <div class="obavestenje">
+                                <h3><b>{{$notification->title}}</b></h3>
+                                <p>{{$notification->description}}</p>
+                        </div>
+                    @endforeach
                 </div>
             </div>
         </div>

@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\Notification;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Support\Facades\Notification;
 
 class MainController extends Controller
 {
@@ -14,7 +14,7 @@ class MainController extends Controller
     public function index()
     {
         $courses = Course::all();
-       // $notifications = Notification::all();
-        return view('dashboard', compact('courses'));
+        $notifications = Notification::all();
+        return view('dashboard', compact('courses' , 'notifications'));
     }
 }

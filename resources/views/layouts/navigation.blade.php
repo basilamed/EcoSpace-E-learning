@@ -57,6 +57,11 @@
                                 {{ __('Posted courses') }}
                             </x-dropdown-link>
                         @endif
+                        @if (Auth::user()->role == "admin" )
+                            <x-dropdown-link class="dropdown-item" href="/admin">
+                                {{ __('User Administration') }}
+                            </x-dropdown-link>
+                        @endif
                     </x-slot>
                 </x-dropdown>
             </div>
