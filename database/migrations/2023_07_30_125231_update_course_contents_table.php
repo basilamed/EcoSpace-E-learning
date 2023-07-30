@@ -9,27 +9,23 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        Schema::create('contents', function (Blueprint $table) {
-            $table->id();
-            $table->unsignedBigInteger('course_id');
+        Schema::table('course_contents', function (Blueprint $table) {
             $table->string('title');
             $table->string('file');
             $table->timestamps();
-
-            $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade');
-
+            $table->dropForeign('fk_course_contents_content_id');
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
-        Schema::dropIfExists('contents');
+        Schema::table('course_contents', function (Blueprint $table) {
+            //
+        });
     }
 };

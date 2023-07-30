@@ -52,6 +52,11 @@
         .btn-primary:hover {
             background-color: #1dc41d;
         }
+        .alert{
+            margin-top: 20px;
+            color: #f44336;
+            justify-content: center;
+        }
     </style>
     <div class="container-fluid px-4">
 
@@ -65,7 +70,7 @@
                             <div class="alert alert-danger">
                                 {{ Session::get('message') }}
                             </div>
-                        @endif
+            @else
             <thead>
                 <tr>
                     <th>Name:</th>
@@ -86,6 +91,7 @@
                 </tr>
             @endforeach
             </tbody>
+            @endif
         </table>
     </div>
 

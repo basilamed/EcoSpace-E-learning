@@ -18,9 +18,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard',  [App\Http\Controllers\MainController::class, 'index'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -46,4 +44,6 @@ Route::post('/course/{id}/create-test', [App\Http\Controllers\CourseController::
 Route::post('/course-content/{id}', [App\Http\Controllers\CourseController::class, 'storeContent']);
 Route::post('/course/{id}/{level}/test', [App\Http\Controllers\CourseController::class, 'endTest']);
 Route::get('/course/{id}/{userId}/r', [App\Http\Controllers\CourseController::class, 'showUserResults']);
+
+Route::post('/course/{course}/enroll', [App\Http\Controllers\CourseController::class, 'enroll'])->name('course.enroll');
 require __DIR__.'/auth.php';

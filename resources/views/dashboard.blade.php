@@ -4,7 +4,63 @@
             {{ __('Home') }}
         </h2>
     </x-slot>
+    <style>
+         .wrapper {
+            margin: 20px auto;
+            width: 80%;
+            max-width: 1200px;
+        }
 
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .card-container {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #fff;
+        }
+
+        .image-container {
+            text-align: center;
+        }
+
+        .card-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .card-title {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .card-h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+        }
+
+        .card-p {
+            color: #666;
+        }
+
+        a {
+            text-decoration: none;
+            color: black;
+        }
+
+        a:hover {
+            color: #007bff;
+        }
+
+        .justify-content-center {
+            text-align: center;
+        }
+    </style>
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
@@ -33,6 +89,33 @@
                             and ecology. Start your learning journey today!
                         </p>
                     </div>
+                </div>
+                <hr style="margin: 1rem 130px;">
+                <h1 class="row justify-content-center">The courses we offer</h1>
+                <div class="wrapper">
+                    
+                    <div class="grid">
+                        @foreach ($courses as $course)
+                        <div>
+                            @if(Auth::user())
+                            <a href="/course/{{ $course->id }}" style=" text-decoration: none; color: black; ">
+                            @endif
+                            @guest
+                            <a href="/course-view/{{ $course->id }}" style=" text-decoration: none; color: black; ">
+                            @endguest
+                            <div class='card-container'>
+                                <div class='image-container'>
+                                    <img src="{{ asset($course->image) }}" class='card-img'/>
+                                </div>
+                                <div class='card-title'>
+                                    <h3 class='card-h3' data-testid="company-name"> {{$course->title}} </h3>
+                                    <p class='card-p'>By: {{ $course->user->name }} {{ $course->user->surname }}</p>
+                                </div>
+                            </div>
+                            </a>
+                        </div>
+                        @endforeach
+                            
                 </div>
             </div>
         </div>

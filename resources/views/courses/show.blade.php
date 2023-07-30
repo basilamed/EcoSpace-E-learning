@@ -140,6 +140,19 @@
             margin: 8px auto;
             width: max-content;
         }
+        .alert{
+            margin: 20px auto;
+            color: #f44336;
+
+        }
+        .link{
+            color: #1dc41d;
+            margin: 0 auto; 
+            border-bottom: 1px solid #1dc41d;
+            padding: 5px;
+            width: 60%;
+
+        }
         
     </style>
 
@@ -181,10 +194,10 @@
                 </div>
                 <table class="table table-bordered">
                     @if(Session::has('message'))
-                                    <div class="alert alert-danger">
+                                    <div class="alert">
                                         {{ Session::get('message') }}
                                     </div>
-                                @endif
+                    @endif           
                     <thead>
                         <tr>
                             <th>Name:</th>
@@ -220,8 +233,7 @@
         <!-- Profile actions for course owner -->
         @if (Auth::user()->ownsCourse($course))
             <div class="profileActions">
-                <!-- Add content button -->
-                <a href='/course-content/{{$course->id}}/create'>Add content</a>
+                
                 <!-- Create test button -->
                 <a href='/course/{{$course->id}}/create-test' class="btn btn-primary customBtn" style="margin-top: 10px;">
                     Create Test
@@ -249,7 +261,7 @@
         <hr style="margin-left: 242px; margin-right: 216px;">
         <div class="content-div2">
             <div class="naslov">
-                <h2>Course study materials</h2>
+                <h2><b>Course study materials</b></h2>
             </div>
             @foreach($contents as $content)
                 <div>
@@ -258,6 +270,21 @@
                     </a>
                 </div>
             @endforeach
+            <!-- Add content button -->
+            @if(Auth::user()->ownsCourse($course))
+            <div id="dugmence">
+                <a href='/course-content/{{$course->id}}/create' class="dugme">Add new material</a>
+            </div>
+            @endif
+            
+        </div>
+    @endif
+    @if(Auth::user()->attendsCourse($course) || Auth::user()->ownsCourse($course))
+        <hr style="margin-left: 242px; margin-right: 216px;">
+        <div class="content-div2">
+            <div class="naslov">
+                <h2>Test you knowlege</h2>
+            </div>
             <div style="margin: 20px">
                 <a href="/course/{{$course->id}}/level" class="btn btn-primary">
                     Test
@@ -265,7 +292,6 @@
             </div>
         </div>
     @endif
-
     <x-slot name="footer">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
             {{ __('Home') }}

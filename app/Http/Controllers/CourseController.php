@@ -154,4 +154,19 @@ class CourseController extends Controller
         }
         return view('courses.attendents', compact('attendants', 'course'));
     }
+
+    public function enroll(Request $request, $courseId)
+    {
+        if (auth()->guest()) {
+            return redirect()->route('login');
+        }
+        $course = Course::findOrFail($courseId);
+
+        CourseUser::create([
+            'user_id' => auth()->user()->id,
+            'course_id' => $course->id,
+        ]);
+
+        return redirect()->back()->with('success', 'You have successfully enrolled in this course');
+    }
 }
