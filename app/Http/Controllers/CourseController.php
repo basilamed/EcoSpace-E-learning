@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Answer;
 use App\Models\CourseUser;
+use App\Models\Question;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller as Controller;
 use App\Models\Course;
 use App\Models\CourseContent;
+use App\Models\User;
+use App\Models\AnswerUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Storage;
@@ -169,4 +173,142 @@ class CourseController extends Controller
 
         return redirect()->back()->with('success', 'You have successfully enrolled in this course');
     }
+
+    public function unenroll(Request $request, $courseId)
+    {
+        if (auth()->guest()) {
+            return redirect()->route('login');
+        }
+        $course = Course::findOrFail($courseId);
+
+        CourseUser::where('user_id', auth()->user()->id)->where('course_id', $course->id)->delete();
+
+        return redirect()->back()->with('success', 'You have successfully unenrolled from this course');
+    }
+
+    public function createTest($course_id)
+    {
+        $course = Course::find($course_id);
+
+        return view('courses.createTest', compact('course'));
+    }
+
+    public function storeTest(Request $request, $course_id)
+    {
+        $data = request()->validate([
+            'question' => 'required',
+            'answer1' => 'required',
+            'answer2' => 'required',
+            'answer3' => 'required',
+            'answer4' => 'required',
+            'correct' => [],
+            'level' => []
+        ]);
+
+        $question = new Question();
+        $question->question = $data['question'];
+        $question->course_id = $course_id;
+        $question->level = $request->input('level');
+        $question->save();
+
+        if ($request->input('correct') == '1') {
+            $answers = [
+                ['question_id' => $question->id, 'answer' => $data['answer1'], 'correct' => true],
+                ['question_id' => $question->id, 'answer' => $data['answer2'], 'correct' => false],
+                ['question_id' => $question->id, 'answer' => $data['answer3'], 'correct' => false],
+                ['question_id' => $question->id, 'answer' => $data['answer4'], 'correct' => false],
+            ];
+        } else if ($request->input('correct') == '2') {
+            $answers = [
+                ['question_id' => $question->id, 'answer' => $data['answer1'], 'correct' => false],
+                ['question_id' => $question->id, 'answer' => $data['answer2'], 'correct' => true],
+                ['question_id' => $question->id, 'answer' => $data['answer3'], 'correct' => false],
+                ['question_id' => $question->id, 'answer' => $data['answer4'], 'correct' => false],
+            ];
+        } else if ($request->input('correct') == '3') {
+            $answers = [
+                ['question_id' => $question->id, 'answer' => $data['answer1'], 'correct' => false],
+                ['question_id' => $question->id, 'answer' => $data['answer2'], 'correct' => false],
+                ['question_id' => $question->id, 'answer' => $data['answer3'], 'correct' => true],
+                ['question_id' => $question->id, 'answer' => $data['answer4'], 'correct' => false],
+            ];
+        } else if ($request->input('correct') == '4') {
+            $answers = [
+                ['question_id' => $question->id, 'answer' => $data['answer1'], 'correct' => false],
+                ['question_id' => $question->id, 'answer' => $data['answer2'], 'correct' => false],
+                ['question_id' => $question->id, 'answer' => $data['answer3'], 'correct' => false],
+                ['question_id' => $question->id, 'answer' => $data['answer4'], 'correct' => true],
+            ];
+        }
+        DB::table('answers')->insert($answers);
+
+        return redirect("/course/{$course_id}/create-test");
+    }
+
+    public function showTest($course_id, $level)
+    {
+        $course = Course::find($course_id);
+        $questions = Question::where('course_id', $course_id)->where('level', $level)->get();
+        if (count($questions) == 0) {
+            Session::flash('message', 'No questions on that level');
+        }
+        return view('courses.showTest', compact('course', 'questions'), ['level' => $level]);
+    }
+
+    public function showLevel($course_id)
+    {
+        $course = Course::find($course_id);
+        return view('courses.level', compact('course'));
+    }
+    public function endTest(Request $request, $courseId, $level)
+    {
+        if (!Auth::check()) {
+            return redirect()->back();
+        }
+
+        $userAnswers = $request->only(array_filter($request->keys(), function ($key) {
+            return strpos($key, 'question') === 0;
+        }));
+
+        $questions = Question::where('level', $level)->get();
+        foreach ($userAnswers as $questionId => $answerId) {
+            $questionId = intval(str_replace('question', '', $questionId));
+            $answerId = intval($answerId);
+            $questionAnswer = new AnswerUser();
+            $questionAnswer->user_id = auth()->user()->id;
+            $questionAnswer->answer_id = $answerId;
+            $questionAnswer->save();
+        }
+
+        return redirect("/course/{$courseId}/{$level}/results/");
+
+    }
+
+    public function results($courseId, $level)
+    {
+        $user = Auth::user();
+        $course = Course::find($courseId);
+        $questions = Question::where('course_id', $courseId)->where('level', $level)->get();
+        $questionsIds = $questions->pluck('id');
+
+        $answerIds = [];
+        foreach ($questionsIds as $questionId) {
+            $questionAnswers = Answer::where('question_id', $questionId)->pluck('id');
+            $answerIds = array_merge($answerIds, $questionAnswers->toArray());
+        }
+
+        $userAnswers = AnswerUser::where('user_id', $user->id)->whereIn('answer_id', $answerIds)->get();
+
+        $correctAnswers = 0;
+        foreach ($userAnswers as $userAnswer) {
+            $answer = Answer::find($userAnswer->answer_id);
+            if ($answer->correct == 1) {
+                $correctAnswers++;
+            }
+        }
+        $results = count($userAnswers) > 0 ? number_format($correctAnswers / count($userAnswers) * 100, 2, '.', '') : 0;
+
+        return view('courses.results', compact('results', 'course'));
+    }
+
 }

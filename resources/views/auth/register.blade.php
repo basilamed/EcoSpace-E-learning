@@ -66,15 +66,16 @@
         <x-input-error :messages="$errors->get('contact')" />
 
         <!-- Picture -->
-        <div class="row mb-3">
-            <x-input-label class="col-md-4 col-form-label text-md-end" :value="'Photo'" />
+        <!-- <div class="row mb-3">
+            <x-input-label class="col-md-4 col-form-label text-md-end" :value="'Photo'" /> 
             <div class="col-md-6">
+                <x-file-input id="picture" name="picture" accept="image/png, image/jpeg, image/jpg" />
                 <x-text-input id="picture" type="file" name="picture" rows="10" accept="image/png, image/jpeg, image/jpg" />
                 <x-input-error :messages="$errors->get('picture')" />
                 <span class="invalid-feedback" role="alert" id="imageServerError"></span>
                 <span class="invalid-feedback" role="alert" id="profilePictureError"></span>
             </div>
-        </div>
+        </div> -->
 
         <!-- Role -->
         <div class="row mb-3">

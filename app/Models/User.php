@@ -61,6 +61,10 @@ class User extends Authenticatable
     {
         return $this->courses->contains($course);
     }
+    public function doesntOwnCourse($course)
+    {
+        return !$this->courses->contains($course);
+    }
     public function attendsCourse($course)
     {
         $attend = $this->attends->where('course_id', $course->id)->first();

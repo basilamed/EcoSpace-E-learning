@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Home') }}
+            {{ __('Course Attendents') }}
         </h2>
     </x-slot>
     <style>
@@ -58,9 +58,9 @@
             justify-content: center;
         }
     </style>
-    <div class="container-fluid px-4">
+    <div class="container-fluid">
 
-        <div class="card mt-4">
+        <div class="card">
             <div class="card-header">
                 <h4>All Users that attend this course</h4>
             </div>

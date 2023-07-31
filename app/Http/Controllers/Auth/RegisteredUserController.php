@@ -46,12 +46,17 @@ class RegisteredUserController extends Controller
             'contact' => ['required', 'string', 'max:255', 'unique:users'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'picture' => ['required'],
         ]);
         $num = rand(1, 100);
-        $username = strtolower($request['name'] . $request['surname'] . $num);
+        $username = strtolower($request['name'] . $request['role'] . $num);
 
         $approved = $request->input('role') === 'teacher' ? false : true;
+
+        // $path = request('picture')->store('temp');
+        // $file = request('picture');
+        // $fileName = $file->getClientOriginalName();
+        // $file->move(public_path('uploads'), $fileName);
+        
         $user = User::create([
             'name' => $request->input('name'),
             'surname' => $request->input('surname'),
@@ -64,21 +69,22 @@ class RegisteredUserController extends Controller
             'contact' => $request->input('contact'),
             'email' => $request->input('email'),
             'password' => Hash::make($request->input('password')),
-            'picture' => $request->input('picture'), // If you are storing the picture URL or base64 encoded image
+            'picture' => 0,
             'approved' => $approved,
             'username' => $username,
         ]);
         
-        // if ($user->role === 'teacher') {
-        //     Session::flash('success', 'You have successfully registered! Now, you must wait for the Admin to approve your registration request');
-        //     event(new Registered($user));
-        //     throw new AuthenticationException();
-        // } elseif ($user->role === 'student') {
-        //     Session::flash('success', 'You have successfully registered! Now, you must verify your email address');
-        //     $user->sendEmailVerificationNotification();
-        //     event(new Registered($user));
-        //     throw new AuthenticationException();
-        // }
+          if ($user->role === 'teacher') {
+              Session::flash('success', 'You have successfully registered! Now, you must wait for the Admin to approve your registration request');
+              event(new Registered($user));
+              throw new AuthenticationException($redirectto = '/login');
+          } 
+        //  elseif ($user->role === 'student') {
+        //      Session::flash('success', 'You have successfully registered! Now, you must verify your email address');
+        //      $user->sendEmailVerificationNotification();
+        //      event(new Registered($user));
+        //      throw new AuthenticationException();
+        //  }
         event(new Registered($user));
 
         Auth::login($user);

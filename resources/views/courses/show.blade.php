@@ -14,6 +14,7 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
             width: 50%;
             padding: 20px 0;
+            background-color: #fff;
         }
 
         .course-image {
@@ -152,15 +153,14 @@
             padding: 5px;
             width: 60%;
 
-        }
-        #enrolled{
+        } 
+        #unenroll{
             margin: 20px auto;
-            color: #1dc41d;
-            font-weight: bold;}
+            background-color: #f44336;
+            font-weight: bold;
+        }
         
     </style>
-
-    <!-- Rest of your code -->
 
     <!-- update and delete-->
     <div class="header2">
@@ -215,7 +215,6 @@
                             <td>{{$attendant->user->name}}</td>
                             <td>{{$attendant->user->surname}}</td>
                             <td>{{$attendant->user->username}}</td>
-                            
                         </tr>
                     @endforeach
                     </tbody>
@@ -232,25 +231,16 @@
               </div>
         @endif
 
-        <!-- Profile actions for course owner -->
-        <div class="content">
-        @if (Auth::user()->ownsCourse($course))
-            <div class="profileActions">
-                <!-- Create test button -->
-                <a href='/course/{{$course->id}}/create-test' class="btn btn-primary customBtn" style="margin-top: 10px;">
-                    Create Test
-                </a>
-            </div>
-            </div>
-        @endif
-   
-
-    <!-- Enroll button -->
+        
+    <!-- Enroll and unenroll button -->
     <div class="finish-dugme">
         @if(Auth::user()->attendsCourse($course))
-            <p id='enrolled'>You have enrolled in this course</p>
+                <form action="{{ route('course.unenroll', $course->id) }}" method="POST">
+                    @csrf
+                    <button type="submit" class='dugme' id='unenroll'>Unenroll from this course</button>
+                </form>
         @else
-            @if(Auth::user()->role == "student")
+            @if(Auth::user()->role == "student" || Auth::user()->doesntOwnCourse($course))
                 <form action="{{ route('course.enroll', $course->id) }}" method="POST">
                     @csrf
                     <button type="submit" class='dugme'>Enroll in this course</button>
@@ -258,6 +248,7 @@
             @endif
         @endif
     </div>
+
 
     <!-- Materials section -->
     @if(Auth::user()->attendsCourse($course) || Auth::user()->ownsCourse($course))
@@ -285,14 +276,20 @@
     @if(Auth::user()->attendsCourse($course) || Auth::user()->ownsCourse($course))
         <hr style="margin-left: 242px; margin-right: 216px;">
         <div class="content-div2">
-            <div class="naslov">
-                <h2><b>Test you knowlege</b></h2>
-            </div>
-            <div style="margin: 20px">
-                <a href="/course/{{$course->id}}/level" class="btn btn-primary">
-                    Test
+            <div class="profileActions">
+                <a href="/course/{{$course->id}}/level" class="dugme" style="background-color:#a7288a;">
+                    Test your knowledge
                 </a>
             </div>
+            <!-- Profile actions for course owner -->
+            @if (Auth::user()->ownsCourse($course))
+                <div class="profileActions">
+                    <!-- Create test button -->
+                    <a href='/course/{{$course->id}}/create-test' class="dugme" style="margin-top: 10px;">
+                        Create New Test
+                    </a>
+                </div>
+            @endif
         </div>
     @endif
     <x-slot name="footer">

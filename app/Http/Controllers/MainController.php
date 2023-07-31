@@ -11,10 +11,10 @@ class MainController extends Controller
 {
     use AuthorizesRequests, ValidatesRequests;
 
-    public function index()
+    public function main()
     {
         $courses = Course::all();
-        $notifications = Notification::all();
+        $notifications = Notification::where('created_at', '>=', now()->subWeek())->get();
         return view('dashboard', compact('courses' , 'notifications'));
     }
 }

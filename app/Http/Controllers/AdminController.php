@@ -62,7 +62,7 @@ class AdminController extends Controller
             'description' => 'required',
         ]);
 
-        $notification = new \App\Models\Notification();
+        $notification = new Notification();
         $notification->title = $data['title'];
         $notification->description = $data['description'];
         $notification->save();

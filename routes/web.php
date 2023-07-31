@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,7 +19,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard',  [App\Http\Controllers\MainController::class, 'index'])->name('dashboard');
+Route::get('/dashboard',  [App\Http\Controllers\MainController::class, 'main'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -56,5 +57,9 @@ Route::post('/course-content/{id}', [App\Http\Controllers\CourseController::clas
 Route::post('/course/{id}/{level}/test', [App\Http\Controllers\CourseController::class, 'endTest']);
 Route::get('/course/{id}/{userId}/r', [App\Http\Controllers\CourseController::class, 'showUserResults']);
 
+
+Route::get('/get-correct-answers/{questionId}', [App\Http\Controllers\AnswerController::class, 'getCorrectAnswerIndices']);
+
 Route::post('/course/{course}/enroll', [App\Http\Controllers\CourseController::class, 'enroll'])->name('course.enroll');
+Route::post('/course/{course}/unenroll', [App\Http\Controllers\CourseController::class, 'unenroll'])->name('course.unenroll');
 require __DIR__.'/auth.php';
