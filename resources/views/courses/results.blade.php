@@ -54,9 +54,14 @@
                 <div class="row">
                     <div class='glavno'>
                         <h1><b>Your results</b></h1>
-                        <h3 style="color: {{$results < 50 ? 'red' : 'green'}};"><b>{{$results}}%</b></h3>
+                        <h3><b>{{ $times_helped == 0 ? 'You did not use any help' : 'You used help ' . $times_helped . ' times, and that made you lose ' . $loss . ' % of your score '}}</b></h3>
+                        
+                        <h3 style="color: {{$results < 50 ? 'red' : 'green'}};"><b>Test result: {{$resultsWithHelp}}%</b></h3>
+                        <h3><b>{{$results < 50 ? 'Better luck next time' : 'Congratulations!'}}</b></h3>
+                        <h3>{{$correctAnswers}}/{{$noQuestions}}</h3>
                     </div>
                     <h2>Grading System:</h2>
+                    <br>
                         <ul>
                             <li>10: 91% - 100%</li>
                             <li>9: 81% - 90%</li>

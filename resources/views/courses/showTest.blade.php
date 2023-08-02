@@ -121,6 +121,11 @@
             --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 calc(2px + var(--tw-ring-offset-width)) var(--tw-ring-color);
             box-shadow: var(--tw-ring-offset-shadow),var(--tw-ring-shadow),var(--tw-shadow)
         }
+        .disclaimer{
+            font-size: 12px;
+            color: #a7288a;
+            float: right;
+        }
     
     </style>
     <div class="container">
@@ -133,6 +138,8 @@
                         </div>
                     @endif
                         <form method="POST" action="/course/{{$course->id}}/{{$level}}/test">
+
+                        <input type="hidden" name="times_help_used" id="timesHelpUsedInput" value="0">
                     @csrf
                     @foreach ($questions as $question)
 
@@ -149,9 +156,11 @@
                             value="{{ $answer->id }} " />
                             @endif
                             <label for="answer{{ $answer->id }}">{{ $answer->answer }}</label>
+                            
                         </div>
                     
                         @endforeach
+                        <p class='disclaimer'>*The help can only be used for one question</p>
                         <button class="btn-help" data-question="{{ $question->id }}">50/50</button>
 
                         </div>
@@ -179,7 +188,6 @@
         const questionAnswers = document.querySelectorAll(`[name="question${questionId}"]`);
         const answersArray = Array.from(questionAnswers);
         const incorrectAnswers = answersArray.filter(answer => answer.dataset.correct === '0');
-
         // Hide two incorrect answers
         let count = 0;
         for (const answer of incorrectAnswers) {
@@ -190,6 +198,17 @@
             }
         }
         event.target.disabled = true;
+
+        // Disable all "Help" buttons when one button is clicked
+        // const helpButtons = document.querySelectorAll('.btn-help');
+        // helpButtons.forEach((button) => {
+        //     button.style.backgroundColor = '#f44336';
+        //     button.disabled = true;
+        // });
+
+        const timesHelpWasUsed = document.querySelectorAll('.btn-help[disabled]').length;
+        document.getElementById('timesHelpUsedInput').value = timesHelpWasUsed;
+
     }
 
     // Attach click event listener to all "Help" buttons

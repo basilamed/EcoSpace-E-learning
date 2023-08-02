@@ -270,6 +270,8 @@ class CourseController extends Controller
             return strpos($key, 'question') === 0;
         }));
 
+        $times_helped = $request->input('times_help_used');
+
         $questions = Question::where('level', $level)->get();
         foreach ($userAnswers as $questionId => $answerId) {
             $questionId = intval(str_replace('question', '', $questionId));
@@ -280,11 +282,11 @@ class CourseController extends Controller
             $questionAnswer->save();
         }
 
-        return redirect("/course/{$courseId}/{$level}/results/");
+        return redirect("/course/{$courseId}/{$level}/{$times_helped}/results/");
 
     }
 
-    public function results($courseId, $level)
+    public function results($courseId, $level, $times_helped)
     {
         $user = Auth::user();
         $course = Course::find($courseId);
@@ -292,6 +294,8 @@ class CourseController extends Controller
         $questionsIds = $questions->pluck('id');
 
         $answerIds = [];
+        $noQuestions = count($questionsIds);
+
         foreach ($questionsIds as $questionId) {
             $questionAnswers = Answer::where('question_id', $questionId)->pluck('id');
             $answerIds = array_merge($answerIds, $questionAnswers->toArray());
@@ -299,16 +303,25 @@ class CourseController extends Controller
 
         $userAnswers = AnswerUser::where('user_id', $user->id)->whereIn('answer_id', $answerIds)->get();
 
+        $latestUserAnswers = $userAnswers->take(-$noQuestions);
+
+
         $correctAnswers = 0;
-        foreach ($userAnswers as $userAnswer) {
+        foreach ($latestUserAnswers as $userAnswer) {
             $answer = Answer::find($userAnswer->answer_id);
             if ($answer->correct == 1) {
                 $correctAnswers++;
             }
         }
-        $results = count($userAnswers) > 0 ? number_format($correctAnswers / count($userAnswers) * 100, 2, '.', '') : 0;
+        $totalPoints = $correctAnswers - ($times_helped * 0.5);
 
-        return view('courses.results', compact('results', 'course'));
+        $resultsWithHelp = $totalPoints > 0 ? number_format($totalPoints / $noQuestions * 100, 2, '.', '') : 0;
+        $results = $totalPoints > 0 ? number_format($correctAnswers / $noQuestions * 100, 2, '.', '') : 0;
+        $loss = $results - $resultsWithHelp;
+
+        return view('courses.results', compact('results','resultsWithHelp', 'loss', 'course', 'correctAnswers', 'noQuestions', 'times_helped'));
     }
+
+    
 
 }
