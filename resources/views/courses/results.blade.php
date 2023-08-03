@@ -52,7 +52,7 @@
         <div class="row">
             <div>
                 <div class="row">
-                    <div class='glavno'>
+                    <div class='glavno'> 
                         <h1><b>Your results</b></h1>
                         <h3><b>{{ $times_helped == 0 ? 'You did not use any help' : 'You used help ' . $times_helped . ' times, and that made you lose ' . $loss . ' % of your score '}}</b></h3>
                         
@@ -60,16 +60,38 @@
                         <h3><b>{{$results < 50 ? 'Better luck next time' : 'Congratulations!'}}</b></h3>
                         <h3>{{$correctAnswers}}/{{$noQuestions}}</h3>
                     </div>
-                    <h2>Grading System:</h2>
-                    <br>
-                        <ul>
-                            <li>10: 91% - 100%</li>
-                            <li>9: 81% - 90%</li>
-                            <li>8: 71% - 80%</li>
-                            <li>7: 61% - 70%</li>
-                            <li>6: 51% - 60%</li>
-                            <li>5: Below 50%</li>
-                        </ul>
+                    <div class="row">
+                        <div>
+                            <h2><b>Answers:</b></h2>
+                            <br>
+                            <ul>
+                                @php
+                                    $correctCount = 0;
+                                @endphp
+                                @foreach ($latestUserAnswers as $userAnswer)
+                                    @php
+                                        $foundCorrectAnswer = false;
+                                    @endphp
+                                    @foreach ($answersCorrect as $correctAnswer)
+                                        @if ($userAnswer['answer_id'] === $correctAnswer['id'])
+                                            @php
+                                                $foundCorrectAnswer = true;
+                                                $correctCount++;
+                                            @endphp
+                                            <li class="green-text">Question {{$correctCount}}: Correct. The correct answer is {{$correctAnswer['answer']}}</li>
+                                            @break
+                                        @endif
+                                    @endforeach
+                                    @if (!$foundCorrectAnswer)
+                                        @php
+                                            $correctCount++;
+                                        @endphp
+                                        <li class="red-text">Question {{$correctCount}}: Incorrect. The correct answer is {{$answersCorrect[$correctCount-1]['answer']}}</li>
+                                    @endif
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
                 </div>
                 <div class="d-flex justify-content-center gap-2">
                     <a type="button" class="btn" href="/course/{{$course->id}}">Go Back</a>

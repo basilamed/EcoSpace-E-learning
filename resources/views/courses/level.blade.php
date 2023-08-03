@@ -96,6 +96,7 @@
                     <p>
                         Remember, take your time to read each question carefully before selecting your answer. Once you've made your choice, click
                         on the <b>'End Test'</b> button at the end of the test.
+                        After you've completed the test, you'll be able to see your score.
                     </p>
 
                     <p>
@@ -114,7 +115,7 @@
             </div>
         </div>
                 <div style="margin-top: 20px; display: flex; justify-content: center;">
-                <a href="#" id="begin-test">
+                        <a href="#" id="begin-test">
                             <button class="btn btn-primary">Begin Test</button>
                         </a>
                 </div>

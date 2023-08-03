@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Storage;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\AnswerController;
 
 class CourseController extends Controller
 {
@@ -139,9 +140,6 @@ class CourseController extends Controller
             $file->move(public_path('uploads'), $fileName);
             $course->image = "uploads/{$fileName}";
         }
-        // else{
-        //     $course->image = $course->image;
-        // }
 
         Session::flash('success', 'You have successfully updated you course');
         $course->save();
@@ -301,10 +299,12 @@ class CourseController extends Controller
             $answerIds = array_merge($answerIds, $questionAnswers->toArray());
         }
 
+        $correctAnswerIds = Answer::whereIn('id', $answerIds)->where('correct', 1)->pluck('id');
+        $answersCorrect = Answer::whereIn('id', $correctAnswerIds)->get();
+        
         $userAnswers = AnswerUser::where('user_id', $user->id)->whereIn('answer_id', $answerIds)->get();
 
         $latestUserAnswers = $userAnswers->take(-$noQuestions);
-
 
         $correctAnswers = 0;
         foreach ($latestUserAnswers as $userAnswer) {
@@ -319,7 +319,258 @@ class CourseController extends Controller
         $results = $totalPoints > 0 ? number_format($correctAnswers / $noQuestions * 100, 2, '.', '') : 0;
         $loss = $results - $resultsWithHelp;
 
-        return view('courses.results', compact('results','resultsWithHelp', 'loss', 'course', 'correctAnswers', 'noQuestions', 'times_helped'));
+        $latestUserAnswers = $latestUserAnswers->toArray();
+        $answersCorrect = $answersCorrect->toArray();
+
+        return view('courses.results', compact('results','resultsWithHelp', 'loss', 'course',
+         'correctAnswers', 'noQuestions', 'times_helped', 'latestUserAnswers', 'answersCorrect'));
+    }
+
+    public function userCourses()
+    {
+        $user = auth()->user();
+        $attends = $user->attends;
+        $courses = [];
+        foreach ($attends as $attend) {
+            $courses[] = $attend->course;
+        }
+        $courses = collect($courses);
+        return view('courses.myCourses', compact('courses'));
+    }
+
+    public function showOverallResults($courseId){
+        $course = Course::find($courseId);
+        $attendants = CourseUser::where('course_id', $courseId)->get();
+
+        $questionsEasy = Question::where('course_id', $courseId)->where('level', 'easy')->get();
+        $questionsIdsE = $questionsEasy->pluck('id');
+        $noQuestionsE = count($questionsIdsE);
+
+        $answerIdsEasy = [];
+        foreach ($questionsIdsE as $questionId) {
+            $questionAnswers = Answer::where('question_id', $questionId)->pluck('id');
+            $answerIdsEasy = array_merge($answerIdsEasy, $questionAnswers->toArray());
+        }
+
+        $userAnswersE = AnswerUser::whereIn('answer_id', $answerIdsEasy)->get();
+        if ($noQuestionsE == 0) {
+            $noTimesTakenE = count($userAnswersE) / $noQuestionsE;}
+            else{
+                $noTimesTakenE = 0; 
+            }
+
+        $correctAnswersE = 0;
+        foreach ($userAnswersE as $userAnswer) {
+            $answer = Answer::find($userAnswer->answer_id);
+            if ($answer->correct == 1) {
+                $correctAnswersE++;
+            }
+        }
+
+        $resultsEasy = count($userAnswersE) > 0 ? number_format($correctAnswersE / count($userAnswersE) * 100, 2, '.', '') : 0;  
+
+        $questionsMedium = Question::where('course_id', $courseId)->where('level', 'medium')->get();
+        $questionsIdsM = $questionsMedium->pluck('id');
+        $noQuestionsM = count($questionsIdsM);
+
+        $answerIdsMedium = [];
+        foreach ($questionsIdsM as $questionId) {
+            $questionAnswers = Answer::where('question_id', $questionId)->pluck('id');
+            $answerIdsMedium = array_merge($answerIdsMedium, $questionAnswers->toArray());
+        }
+
+        $userAnswersM = AnswerUser::whereIn('answer_id', $answerIdsMedium)->get();
+        if($noQuestionsM != 0){
+         $noTimesTakenM = count($userAnswersM) / $noQuestionsM;}
+        else{
+            $noTimesTakenM = 0; 
+        }
+
+        $correctAnswersM = 0;
+        foreach ($userAnswersM as $userAnswer) {
+            $answer = Answer::find($userAnswer->answer_id);
+            if ($answer->correct == 1) {
+                $correctAnswersM++;
+            }
+        }
+
+        $resultsMedium = count($userAnswersM) > 0 ? number_format($correctAnswersM / count($userAnswersM) * 100, 2, '.', '') : 0;
+
+        $questionsHard = Question::where('course_id', $courseId)->where('level', 'hard')->get();
+        $questionsIdsH = $questionsHard->pluck('id');
+        $noQuestionsH = count($questionsIdsH);
+
+        $answerIdsHard = [];
+
+        foreach ($questionsIdsH as $questionId) {
+            $questionAnswers = Answer::where('question_id', $questionId)->pluck('id');
+            $answerIdsHard = array_merge($answerIdsHard, $questionAnswers->toArray());
+        }
+
+        $userAnswersH = AnswerUser::whereIn('answer_id', $answerIdsHard)->get();
+        if($noQuestionsH != 0){
+        $noTimesTakenH = count($userAnswersH) / $noQuestionsH;}
+        else{
+            $noTimesTakenH = 0; 
+        }
+
+        $correctAnswersH = 0;
+        foreach ($userAnswersH as $userAnswer) {
+            $answer = Answer::find($userAnswer->answer_id);
+            if ($answer->correct == 1) {
+                $correctAnswersH++;
+            }
+        }
+
+        $resultsHard = count($userAnswersH) > 0 ? number_format($correctAnswersH / count($userAnswersH) * 100, 2, '.', '') : 0;
+
+        $results = ($resultsEasy + $resultsMedium + $resultsHard) / 3;
+
+
+        return view('courses.overallResults', compact('course' ,'attendants', 'results', 
+        'resultsEasy', 'resultsMedium', 'resultsHard', 'noQuestionsE', 'noQuestionsM', 'noQuestionsH',
+        'noTimesTakenE', 'noTimesTakenM', 'noTimesTakenH'
+    ));
+    }
+
+    public function showUserResults($courseId, $userId)
+    {
+        $user = User::find($userId);
+        $course = Course::find($courseId);
+
+        $course = Course::find($courseId);
+        //easy
+        $questionsEasy = Question::where('course_id', $courseId)->where('level', 'easy')->get();
+        $questionsIdsE = $questionsEasy->pluck('id');
+        $noQuestionsE = count($questionsIdsE);
+
+        $answerIdsEasy = [];
+        foreach ($questionsIdsE as $questionId) {
+            $questionAnswers = Answer::where('question_id', $questionId)->pluck('id');
+            $answerIdsEasy = array_merge($answerIdsEasy, $questionAnswers->toArray());
+        }
+
+        $userAnswersE = AnswerUser::where('user_id', $user->id)->whereIn('answer_id', $answerIdsEasy)->get();
+        $firstUserAnswersE = $userAnswersE->take($noQuestionsE);
+        $latestUserAnswersE = $userAnswersE->take(-$noQuestionsE);
+
+        $correctAnswersE = 0;
+        foreach ($userAnswersE as $userAnswer) {
+            $answer = Answer::find($userAnswer->answer_id);
+            if ($answer->correct == 1) {
+                $correctAnswersE++;
+            }
+        }
+
+        $firstcorrectAnswersE = 0;
+        foreach ($firstUserAnswersE as $userAnswer) {
+            $answer = Answer::find($userAnswer->answer_id);
+            if ($answer->correct == 1) {
+                $firstcorrectAnswersE++;
+            }
+        }
+
+        $latestcorrectAnswersE = 0;
+        foreach ($latestUserAnswersE as $userAnswer) {
+            $answer = Answer::find($userAnswer->answer_id);
+            if ($answer->correct == 1) {
+                $latestcorrectAnswersE++;
+            }
+        }
+
+        $firstTestResultsEasy = count($firstUserAnswersE) > 0 ? number_format($firstcorrectAnswersE / count($firstUserAnswersE) * 100, 2, '.', '') : 0;
+        $resultsEasy = count($userAnswersE) > 0 ? number_format($correctAnswersE / count($userAnswersE) * 100, 2, '.', '') : 0;  
+
+        //medium
+        $questionsMedium = Question::where('course_id', $courseId)->where('level', 'medium')->get();
+        $questionsIdsM = $questionsMedium->pluck('id');
+        $noQuestionsM = count($questionsIdsM);
+
+        $answerIdsM = [];
+        foreach ($questionsIdsM as $questionId) {
+            $questionAnswers = Answer::where('question_id', $questionId)->pluck('id');
+            $answerIdsM = array_merge($answerIdsM, $questionAnswers->toArray());
+        }
+
+        $userAnswersM = AnswerUser::where('user_id', $user->id)->whereIn('answer_id', $answerIdsM)->get();
+        $latestUserAnswersM = $userAnswersM->take(-$noQuestionsM);
+        $firstUserAnswersM = $userAnswersM->take($noQuestionsM);
+
+        $correctAnswersM = 0;
+        foreach ($userAnswersM as $userAnswer) {
+            $answer = Answer::find($userAnswer->answer_id);
+            if ($answer->correct == 1) {
+                $correctAnswersM++;
+            }
+        }
+
+        $firstcorrectAnswersM = 0;
+        foreach ($firstUserAnswersM as $userAnswer) {
+            $answer = Answer::find($userAnswer->answer_id);
+            if ($answer->correct == 1) {
+                $firstcorrectAnswersM++;
+            }
+        }
+
+        $latestcorrectAnswersM = 0;
+        foreach ($latestUserAnswersM as $userAnswer) {
+            $answer = Answer::find($userAnswer->answer_id);
+            if ($answer->correct == 1) {
+                $latestcorrectAnswersM++;
+            }
+        }
+
+        $resultsMedium = count($userAnswersM) > 0 ? number_format($correctAnswersM / count($userAnswersM) * 100, 2, '.', '') : 0;
+        $firstTestResultsMedium = count($firstUserAnswersM) > 0 ? number_format($firstcorrectAnswersM / count($firstUserAnswersM) * 100, 2, '.', '') : 0;
+
+        //hard
+        $questionsHard = Question::where('course_id', $courseId)->where('level', 'hard')->get();
+        $questionsIdsH = $questionsHard->pluck('id');
+        $noQuestionsH = count($questionsIdsH);
+
+        $answerIdsH = [];
+        foreach ($questionsIdsH as $questionId) {
+            $questionAnswers = Answer::where('question_id', $questionId)->pluck('id');
+            $answerIdsH = array_merge($answerIdsH, $questionAnswers->toArray());
+        }
+
+        $userAnswersH = AnswerUser::where('user_id', $user->id)->whereIn('answer_id', $answerIdsH)->get();
+        $latestUserAnswersH = $userAnswersH->take(-$noQuestionsH);
+        $firstUserAnswersH = $userAnswersH->take($noQuestionsH);
+        
+        $correctAnswersH = 0;
+        foreach ($userAnswersH as $userAnswer) {
+            $answer = Answer::find($userAnswer->answer_id);
+            if ($answer->correct == 1) {
+                $correctAnswersH++;
+            }
+        }
+
+        $firstcorrectAnswersH = 0;
+        foreach ($firstUserAnswersH as $userAnswer) {
+            $answer = Answer::find($userAnswer->answer_id);
+            if ($answer->correct == 1) {
+                $firstcorrectAnswersH++;
+            }
+        }
+
+        $latestcorrectAnswersH = 0;
+        foreach ($latestUserAnswersH as $userAnswer) {
+            $answer = Answer::find($userAnswer->answer_id);
+            if ($answer->correct == 1) {
+                $latestcorrectAnswersH++;
+            }
+        }
+
+        $resultsHard = count($userAnswersH) > 0 ? number_format($correctAnswersH / count($userAnswersH) * 100, 2, '.', '') : 0;
+        $firstTestResultsHard = count($firstUserAnswersH) > 0 ? number_format($firstcorrectAnswersH / count($firstUserAnswersH) * 100, 2, '.', '') : 0;
+
+
+        return view('courses.testResults', compact('course', 'resultsEasy', 'resultsHard',
+         'resultsMedium', 'user', 'latestcorrectAnswersE', 'latestcorrectAnswersM', 
+         'latestcorrectAnswersH', 'noQuestionsE', 'noQuestionsM', 'noQuestionsH',
+          'firstTestResultsEasy', 'firstcorrectAnswersE'
+          , 'firstTestResultsMedium', 'firstcorrectAnswersM', 'firstTestResultsHard', 'firstcorrectAnswersH'));
     }
 
     

@@ -84,4 +84,9 @@ class User extends Authenticatable
         return "{$this->name} {$this->surname}";
     }
 
+    public function getId()
+    {
+        return $this->id;
+    }
+
 }

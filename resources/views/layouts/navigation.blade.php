@@ -62,6 +62,9 @@
                                 {{ __('User Administration') }}
                             </x-dropdown-link>
                         @endif
+                            <x-dropdown-link class="dropdown-item" href="/my-courses">
+                                {{ __('Enrolled courses') }}
+                            </x-dropdown-link>
                     </x-slot>
                 </x-dropdown>
             </div>

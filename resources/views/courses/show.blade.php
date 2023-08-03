@@ -281,6 +281,11 @@
                     Test your knowledge
                 </a>
             </div>
+            <div class="profileActions">
+                <a href="/course/{{ $course->id }}/{{ Auth::user()->getId() }}/results" class="dugme" style="background-color:#a7288a;">
+                    All test results
+                </a>
+            </div>
             <!-- Profile actions for course owner -->
             @if (Auth::user()->ownsCourse($course))
                 <div class="profileActions">

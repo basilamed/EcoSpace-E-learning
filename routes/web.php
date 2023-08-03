@@ -55,8 +55,10 @@ Route::get('/course/{id}/attendants', [App\Http\Controllers\CourseController::cl
 Route::post('/course/{id}/create-test', [App\Http\Controllers\CourseController::class, 'storeTest']);
 Route::post('/course-content/{id}', [App\Http\Controllers\CourseController::class, 'storeContent']);
 Route::post('/course/{id}/{level}/test', [App\Http\Controllers\CourseController::class, 'endTest']);
-Route::get('/course/{id}/{userId}/r', [App\Http\Controllers\CourseController::class, 'showUserResults']);
+Route::get('/course/{id}/{userId}/results', [App\Http\Controllers\CourseController::class, 'showUserResults']);
+Route::get('/course/{id}/results', [App\Http\Controllers\CourseController::class, 'showOverallResults']);
 
+Route::get('/my-courses', [App\Http\Controllers\CourseController::class, 'userCourses']);
 
 Route::get('/get-correct-answers/{questionId}', [App\Http\Controllers\AnswerController::class, 'getCorrectAnswerIndices']);
 

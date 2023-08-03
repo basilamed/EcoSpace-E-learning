@@ -7,9 +7,11 @@
     <style>
         /* Custom CSS styles go here */
         .container-fluid {
-            padding: 20px;
+            padding: 40px;
             width: 70%;
-            margin: 0 auto;
+            margin: 20px auto;
+            background-color: #fff;
+            border-radius: 5px;
         }
 
         .card-header {
@@ -57,12 +59,19 @@
             color: #f44336;
             justify-content: center;
         }
+        .profileActions{
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            width: 60%;
+            margin: 20px auto;
+        }
     </style>
     <div class="container-fluid">
 
         <div class="card">
             <div class="card-header">
-                <h4>All Users that attend this course</h4>
+                <h2><b>All Users that attend this course</b></h2>
             </div>
         </div>
         <table class="table table-bordered">
@@ -77,6 +86,8 @@
                     <th>Surname:</th>
                     <th>Username:</th>
                     <th>Email:</th>
+                    <th>Role:</th>
+                    <th>Gender:</th>
                     <th>Results on a test:</th>
                 </tr>
             </thead>
@@ -87,14 +98,19 @@
                     <td>{{$attendant->user->surname}}</td>
                     <td>{{$attendant->user->username}}</td>
                     <td>{{$attendant->user->email}}</td>
-                    <td><a class="btn btn-primary" href="/course/{{$course->id}}/{{$attendant->user->id}}/r">Results</a></td>
+                    <td>{{$attendant->user->role}}</td>
+                    <td>{{$attendant->user->gender}}</td>
+                    <td><a class="btn btn-primary" href="/course/{{$course->id}}/{{$attendant->user->id}}/results">Results</a></td>
                 </tr>
             @endforeach
             </tbody>
             @endif
         </table>
-    </div>
+        <div class="profileActions">
+            <a class="btn btn-primary" href="/course/{{$course->id}}/results">Overall Results</a>
+        </div>
 
+    </div>
 </div>
     <x-slot name="footer">
         <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
