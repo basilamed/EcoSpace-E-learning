@@ -81,7 +81,7 @@
         </div>
 
     </div>
-    <div class="footer dark:bg-gray-800 " style="background-color: #f0f0f0; padding: 20px; text-align: center; padding-top:20px;">
+    <div class="footer dark:bg-gray-800 " style="background-color: #fff; padding: 20px; text-align: center; padding-top:20px;">
         <h4 style="font-size: 1.2rem; margin-bottom: 10px;">EcoSpace</h4>
         <a style="color: #888;">&copy;CopyRight BM 2023</a>
     </div>

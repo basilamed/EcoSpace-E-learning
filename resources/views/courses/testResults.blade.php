@@ -17,6 +17,37 @@
             font-weight: bold;
             font-size: 20px;
         }
+        .profileActions{
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            width: 100%;
+            margin: 20px auto;
+        }
+        .btn{
+            display: block;
+            width: 100%;
+            padding: 10px 20px;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            background-color: #a7288a;
+        }
+        .btn:hover {
+            background-color: #691957;
+        }
+
+        .btn-primary {
+            background-color: #4ae44a;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background-color: #1dc41d;
+        }
     </style>
     <div class="container">
         <div class="card">
@@ -50,7 +81,9 @@
                             Latest hard test: {{ $latestcorrectAnswersH }}/{{ $noQuestionsH }}
                         @endif
                     </b></h3>
-
+                    <div class="profileActions">
+                        <a class="btn btn-primary" href="/course/{{$course->id}}">Go back to course details</a>
+                    </div>
                     </div>
             </div>
         </div>

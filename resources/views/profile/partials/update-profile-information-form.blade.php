@@ -60,7 +60,9 @@
         <!-- Picture -->
         <!-- <div>
             <x-input-label for="picture" :value="__('Picture')" />
-            <x-text-input id="picture" name="picture" type="file" class="mt-1 block w-full" :value="old('picture', $user->picture)" required autocomplete="picture" />
+            <x-file-input id="picture" class="@error('picture') is-invalid @enderror" name="picture"
+            accept="image/png, image/jpeg, image/jpg" />
+
             <x-input-error class="mt-2" :messages="$errors->get('picture')" />
         </div> -->
 

@@ -47,6 +47,9 @@
                     <div>
                         <a type="button" class="btn" href="/course/{{$course->id}}/attendants">Go Back</a>
                     </div>
+                    <div>
+                        <a type="button" class="btn" href="/course/{{$course->id}}/difficult-questions">Check difficult questions</a>
+                    </div>
                 </div>
             </div>
         </div>

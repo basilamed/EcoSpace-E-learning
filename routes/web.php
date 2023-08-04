@@ -58,6 +58,8 @@ Route::post('/course/{id}/{level}/test', [App\Http\Controllers\CourseController:
 Route::get('/course/{id}/{userId}/results', [App\Http\Controllers\CourseController::class, 'showUserResults']);
 Route::get('/course/{id}/results', [App\Http\Controllers\CourseController::class, 'showOverallResults']);
 
+Route::get('/course/{id}/difficult-questions', [App\Http\Controllers\CourseController::class, 'showDifficultQuestions']);
+
 Route::get('/my-courses', [App\Http\Controllers\CourseController::class, 'userCourses']);
 
 Route::get('/get-correct-answers/{questionId}', [App\Http\Controllers\AnswerController::class, 'getCorrectAnswerIndices']);

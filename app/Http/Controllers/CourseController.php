@@ -573,6 +573,51 @@ class CourseController extends Controller
           , 'firstTestResultsMedium', 'firstcorrectAnswersM', 'firstTestResultsHard', 'firstcorrectAnswersH'));
     }
 
+    public function showDifficultQuestions($courseId)
+    {
+        $course = Course::findOrFail($courseId);
+        
+        $difficultQuestions = [];
+    
+        $levels = ['easy', 'medium', 'hard'];
+    
+        foreach ($levels as $level) {
+            $questions = Question::where('course_id', $courseId)
+                ->where('level', $level)
+                ->with('answers') // Load related answers
+                ->get();
+    
+            $totalQuestions = $questions->count();
+    
+            if ($totalQuestions > 0) {
+                $difficultQuestions[$level] = [];
+    
+                foreach ($questions as $question) {
+                    $totalAttempts = AnswerUser::whereIn('answer_id', $question->answers->pluck('id'))
+                        ->count();
+    
+                    $totalCorrect = AnswerUser::whereIn('answer_id', $question->answers->pluck('id'))
+                        ->whereIn('answer_id', $question->answers->where('correct', 1)->pluck('id'))
+                        ->count();
+    
+                    $accuracy = ($totalAttempts > 0) ? ($totalCorrect / $totalAttempts) * 100 : 0;
+    
+                    if ($accuracy < 80) { // More than 20% got wrong
+                        $difficultQuestions[$level][] = [
+                            'question' => $question,
+                            'accuracy' => $accuracy
+                        ];
+                    }
+                }
+            }
+        }
+    
+        return view('courses.difficultQuestions', compact('course', 'difficultQuestions'));
+    }
+    
+
+
+
     
 
 }

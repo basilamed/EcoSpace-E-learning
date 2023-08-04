@@ -153,7 +153,6 @@
                                     @enderror
 
                                     <span class="invalid-feedback" role="alert" id="profilePictureError"></span>
-                                    <span class="invalid-feedback" role="alert" id="profilePictureError"></span>
                                     <small class="d-block text-center"><i>To not change the image leave blank</i></small>
                                 </div>
                             </div>

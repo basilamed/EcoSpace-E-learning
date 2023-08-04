@@ -48,7 +48,7 @@ class RegisteredUserController extends Controller
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ]);
         $num = rand(1, 100);
-        $username = strtolower($request['name'] . $request['role'] . $num);
+        $username = strtolower($request['name']  . $num);
 
         $approved = $request->input('role') === 'teacher' ? false : true;
 

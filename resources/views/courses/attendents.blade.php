@@ -108,6 +108,7 @@
         </table>
         <div class="profileActions">
             <a class="btn btn-primary" href="/course/{{$course->id}}/results">Overall Results</a>
+            <a class="btn btn-primary" href="/course/{{$course->id}}">Go back</a>
         </div>
 
     </div>

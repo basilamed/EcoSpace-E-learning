@@ -23,7 +23,7 @@ class ProfileUpdateRequest extends FormRequest
             'birthCountry' => ['string', 'max:255'],
             'birthDate' => ['date'],
             'contact' => ['string', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
-            'picture' => ['file'],
+            'picture' => ['nullable'],
             'email' => ['email', 'max:255', Rule::unique(User::class)->ignore($this->user()->id)],
         ];
     }
